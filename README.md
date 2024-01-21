@@ -11,30 +11,30 @@ In the event of an anomaly or suspicious behavior, predefined options for handli
 
 ### Scope and Depth  
 The following are the goals and objectives that this project will aspire to achieve.
-The Functional Goals:
-•	Collect data on keypress durations and time intervals between keypresses.
-•	Analyze this data to create a user-specific typing profile.
-•	Design and train an AI model capable of recognizing and distinguishing individual user patterns.
-•	Continuously retrain and fine-tune the model to adapt to evolving typing habits.
-•	Use the AI model to assess whether the current typing behavior matches the established user patterns.
-•	Allow authorized users to access the system based on successful authentication.
-•	Provide predefined options for handling anomalies, such as discreet notifications or system shutdown.
-•	Ensure that the system remains non-intrusive and transparent to the user.
-•	Design the system to handle data from a single user but with the potential for future scalability to accommodate multiple users.
-The Non-Functional Goals:
-•	Ensure the collected user behavior data remains secure and cannot be accessed or tampered with by unauthorized parties.
-•	Achieve a high level of accuracy in recognizing and distinguishing user patterns to minimize false positives.
-•	Create a robust and reliable system that functions without bugs or errors.
-•	Make the source code accessible to the public to encourage transparency and collaboration.
-The following are the goals and objectives that this project will not aim to achieve:
-The Functional Goals:
-•	User registration, account recovery, and account management functionalities are outside the scope of your project. This project focuses on the authentication aspect rather than the broader user management process.
-•	This project is primarily designed for a single user's computer. Handling multiple user profiles and access control for shared devices would be a separate project scope.
-The Non-Functional Goals:
-•	Protecting against network-based attacks and unauthorized access over a network is beyond the scope of your project. Your project is primarily focused on physical access through the keyboard.
-•	Ensuring that the system complies with legal regulations, such as data privacy laws like GDPR or HIPAA.
-•	While this project will be developed for a specific platform, ensuring cross-platform compatibility (e.g., Windows, macOS, Linux) is an additional non-functional goal is out of scope.
-•	Providing real-time feedback to users on their typing behavior, such as notifications and alerts, is a complex real-time feature and will be out of scope.
+The Functional Goals:  
+•	Collect data on keypress durations and time intervals between keypresses.  
+•	Analyze this data to create a user-specific typing profile.  
+•	Design and train an AI model capable of recognizing and distinguishing individual user patterns.  
+•	Continuously retrain and fine-tune the model to adapt to evolving typing habits.  
+•	Use the AI model to assess whether the current typing behavior matches the established user patterns.  
+•	Allow authorized users to access the system based on successful authentication.  
+•	Provide predefined options for handling anomalies, such as discreet notifications or system shutdown.  
+•	Ensure that the system remains non-intrusive and transparent to the user.  
+•	Design the system to handle data from a single user but with the potential for future scalability to accommodate multiple users.  
+The Non-Functional Goals:  
+•	Ensure the collected user behavior data remains secure and cannot be accessed or tampered with by unauthorized parties.  
+•	Achieve a high level of accuracy in recognizing and distinguishing user patterns to minimize false positives.  
+•	Create a robust and reliable system that functions without bugs or errors.  
+•	Make the source code accessible to the public to encourage transparency and collaboration.  
+The following are the goals and objectives that this project will not aim to achieve:  
+The Functional Goals:  
+•	User registration, account recovery, and account management functionalities are outside the scope of your project. This project focuses on the authentication aspect rather than the broader user management process.  
+•	This project is primarily designed for a single user's computer. Handling multiple user profiles and access control for shared devices would be a separate project scope.  
+The Non-Functional Goals:  
+•	Protecting against network-based attacks and unauthorized access over a network is beyond the scope of your project. Your project is primarily focused on physical access through the keyboard.  
+•	Ensuring that the system complies with legal regulations, such as data privacy laws like GDPR or HIPAA.  
+•	While this project will be developed for a specific platform, ensuring cross-platform compatibility (e.g., Windows, macOS, Linux) is an additional non-functional goal is out of scope.  
+•	Providing real-time feedback to users on their typing behavior, such as notifications and alerts, is a complex real-time feature and will be out of scope.  
 
 ### Methodology  
 Software Development Methodology: We will follow an iterative and adaptive software development methodology, combining elements of Agile and Iterative Development. This approach allows for flexibility and continuous improvement throughout the project's development stages. We will regularly review and refine the system based on feedback and emerging requirements.
