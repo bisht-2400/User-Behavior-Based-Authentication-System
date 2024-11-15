@@ -1,33 +1,56 @@
-import pickle
+import os
 import threading
 import time
 import pandas
 import pandas as pd
-from keylogger import *
 import keyboard
+
+
+def create_path_if_not_exists(path):
+    if not os.path.exists(path):
+        os.makedirs(path)
+        print(f"Directory created: {path}")
+    else:
+        print(f"Directory already exists: {path}")
+
+
+def is_key_event(string):
+    keywords = ['alt', 'alt gr', 'ctrl', 'left alt', 'left ctrl', 'left shift', 'left windows', 'right alt',
+                'right ctrl', 'right shift', 'right windows', 'shift', 'windows', 'enter', 'space', 'tab',
+                'insert', 'caps lock', 'esc', 'left', 'right', 'up', 'down', 'backspace', 'print screen']
+    if string in keywords:
+        return False
+    else:
+        return True
 
 
 class Keylogger:
     def __init__(self):
         self.dwell_time = []
         self.flight_time = []
-        self.start_time = 0
+        self.dwell_start_time = 0
+        self.flight_start_time = None
         self.running = True
+        self.last_key = "~"
         self.flight_dataframe = pd.DataFrame()
         self.dwell_dataframe = pd.DataFrame()
 
     def record_keys(self, event):
-        current_time = time.time()
-        if event.event_type == keyboard.KEY_DOWN:
-            if self.start_time != 0:
-                f_time = time.time() - self.start_time
+        if event.event_type == keyboard.KEY_DOWN and is_key_event(event.name):
+            self.dwell_start_time = event.time
+            if self.flight_start_time is not None:
+                f_time = event.time - self.flight_start_time
                 if 0 < f_time < 1:
-                    self.flight_time.append(f_time)
-            self.start_time = current_time
-        elif event.event_type == keyboard.KEY_UP:
-            d_time = current_time - self.start_time
+                    self.flight_time.append([f_time, event.name, self.last_key])
+
+        elif event.event_type == keyboard.KEY_UP and is_key_event(event.name):
+            self.flight_start_time = event.time
+            d_time = event.time - self.dwell_start_time
+
             if d_time > 0:
-                self.dwell_time.append(d_time)
+                self.dwell_time.append([d_time, event.name, self.last_key])
+            self.last_key = event.name
+
         if len(self.dwell_time) % 50 == 0 and len(self.dwell_time) > 0:
             self.save_dataframe()
             self.dwell_time.clear()
@@ -46,8 +69,18 @@ class Keylogger:
         keyboard.unhook_all()
 
     def convert_to_df(self):
-        df_dwell = pd.DataFrame(self.dwell_time, columns=['dwell_times'])
-        df_flight = pd.DataFrame(self.flight_time, columns=['flight_times'])
+        df_dwell = pd.DataFrame({
+            'dwell_times': [entry[0] for entry in self.dwell_time],
+            'current_key': [ord(entry[1]) for entry in self.dwell_time],
+            'last_key': [ord(entry[2]) for entry in self.dwell_time]
+
+        })
+
+        df_flight = pd.DataFrame({
+            'flight_times': [entry[0] for entry in self.flight_time],
+            'current_key': [ord(entry[1]) for entry in self.flight_time],
+            'last_key': [ord(entry[2]) for entry in self.flight_time]
+        })
 
         if self.flight_dataframe.empty:
             self.flight_dataframe = df_flight
@@ -62,14 +95,22 @@ class Keylogger:
     def save_dataframe(self):
         print("\nSAVING DF\n")
         self.convert_to_df()
-        self.flight_dataframe.to_pickle('./saved_files/flight_data.pkl')
-        self.dwell_dataframe.to_pickle('./saved_files/dwell_data.pkl')
+
+        self.flight_dataframe.to_excel('./saved_files/flight_data.xlsx', index=False)
+        self.dwell_dataframe.to_excel('./saved_files/dwell_data.xlsx', index=False)
+
+        # self.flight_dataframe.to_pickle('./saved_files/unauthorized_flight_data_2.pkl')
+        # self.dwell_dataframe.to_pickle('./saved_files/unauthorized_dwell_data_2.pkl')
 
     def load_dataframe(self):
         try:
             print('\nLOADING FRAMES\n')
-            self.flight_dataframe = pandas.read_pickle('./saved_files/flight_data.pkl')
-            self.dwell_dataframe = pandas.read_pickle('./saved_files/dwell_data.pkl')
+            self.flight_dataframe = pandas.read_excel('./saved_files/flight_data.xlsx')
+            self.dwell_dataframe = pandas.read_excel('./saved_files/dwell_data.xlsx')
+
+            # self.flight_dataframe.to_pickle('./saved_files/unauthorized_flight_data_2.pkl')
+            # self.dwell_dataframe.to_pickle('./saved_files/unauthorized_dwell_data_2.pkl')
+
         except FileNotFoundError:
             print('\nEMPTY DF DETECTED\n')
         except Exception as e:
@@ -81,13 +122,14 @@ class Keylogger:
 
     def __repr__(self):
         if not self.dwell_dataframe.empty and not self.flight_dataframe.empty:
-            return (f"Flight Dataframe: {self.flight_dataframe.tail(130), self.flight_dataframe.shape[0]}\n"
-                    f"Dwell Dataframe: {self.dwell_dataframe.tail(130), self.dwell_dataframe.shape[0]}")
+            return (f"Flight Dataframe: {self.flight_dataframe.tail(50), self.flight_dataframe.shape[0]}\n"
+                    f"Dwell Dataframe: {self.dwell_dataframe.tail(50), self.dwell_dataframe.shape[0]}")
         else:
             return f"Dataframe: {self.flight_dataframe, self.dwell_dataframe}"
 
 
 def main():
+    create_path_if_not_exists('/saved_files')
     keylogger = Keylogger()
 
     keylog_thread = threading.Thread(target=keylogger.start_keylogger)
